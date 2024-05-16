@@ -7,7 +7,7 @@ Warsim 2024 - Java-Assignment #4
 1. **Added a weather package (with 4 children) that affects the battle (slightly less damage or chance to hit)**
    - The weather is chosen at random.
    - There are 4 types of weather types (Sunny, Stormy, Windy, & Rainy).
-   - The type of weather and severity will be printed out before the BATTLE!!!!
+   - The type of weather and severity that was chosen at random will be printed out before the BATTLE!!!!
 
 2. **Added a fourth weapon type for the weapon package (CROSSBOW)**
    - Added a CROSSBOW weapon which the user/enemy are able to choose it.
