@@ -102,10 +102,11 @@ public class Ink {
     } // printSaveConfirmation()
 
     public void printTurnMenu() {
-        System.out.println(RED_BACKGROUND + BLACK + "***********************************************************" + RESET);
-        System.out.println(BOLD + "ATTACK : (1) NORMAL | (2) HEAVY | (3) EXIT | (4) SAVE " + RESET);
-        System.out.println(RED_BACKGROUND + BLACK + "***********************************************************" + RESET);
+        System.out.println(RED_BACKGROUND + BLACK + "******************************************************************" + RESET);
+        System.out.println(BOLD + "ATTACK : (1) NORMAL | (2) HEAVY | (3) HEAL | (4) SAVE | (5) EXIT" + RESET);
+        System.out.println(RED_BACKGROUND + BLACK + "******************************************************************" + RESET);
     }
+    
 
     public void printWarriorStats(Warrior player, Warrior enemy) {
         System.out.println(GREEN_BACKGROUND + BLACK + "*********************(WARRIOR)************************" + RESET);

@@ -2,7 +2,7 @@ import warrior.*;
 import weapon.*;
 import weather.*;
 import armour.*;
-//import items.HealingPotion;
+import items.*;
 import utility.*;
 
 import java.util.Scanner;
@@ -13,36 +13,39 @@ import java.util.List;
 
 public class Warsim {
   // Objects
-  public static Scanner input = new Scanner(System.in);
-  public static Random randNum = new Random();
-  public static Ink ink = new Ink();
-  public static IO io = new IO();
-  public static List<Object> things = new ArrayList<>();
-  
-  public static Warrior player; // player
-  public static Weapon pWeapon; // player weapon
-  public static Armour pArmour; // player armour
-  public static Weather weather;
+public static Scanner input = new Scanner(System.in);
+public static Random randNum = new Random();
+public static Ink ink = new Ink();
+public static IO io = new IO();
+public static List<Object> things = new ArrayList<>();
 
-  public static Warrior enemy; // enemy
-  public static Weapon eWeapon; // enemy weapon
-  public static Armour eArmour; // enemy armour
-  
+public static Warrior player; // player
+public static Weapon pWeapon; // player weapon
+public static Armour pArmour; // player armour
+public static Weather weather;
+public static SmallHealthPotion healthPotion = new SmallHealthPotion(150);
+public static SmallHealthPotion potion; // Declare a variable to hold the potion instance
 
-  // Game Vars
-  public static boolean gameOver = false;
-  public static boolean playerTurn = true; // player starts
-  public static String who = "Player";
-  public static String winner = "";
-  public static int choice = 0;
-  public static int attackType = 0;
-  public static int pDamage = 0;
-  public static int eDamage = 0;
-  
-  
-  //================>>
-  // main method
-  public static void main(String[] args) {
+
+public static Warrior enemy; // enemy
+public static Weapon eWeapon; // enemy weapon
+public static Armour eArmour; // enemy armour
+
+
+// Game Vars
+public static boolean gameOver = false;
+public static boolean playerTurn = true; // player starts
+public static String who = "Player";
+public static String winner = "";
+public static int choice = 0;
+public static int attackType = 0;
+public static int pDamage = 0;
+public static int eDamage = 0;
+
+
+//================>>
+// main method
+public static void main(String[] args) {
 
     // Prints welcome message w/ASCII art ;)
     ink.welcome();
@@ -79,111 +82,115 @@ public class Warsim {
     } else {
       createGame();
     }
-    
-    // Main Game Loop
-    while(!gameOver) {
-      if(playerTurn) {
-        // player code
-        ink.printTurnMenu();
-        attackType = input.nextInt();
-        if(attackType == 3) {
-          gameOver = !gameOver;
-          break; // breaks out of the while loop
-        }
-        if(attackType == 4) {
-          // save game
-          io.saveGame(player, pWeapon, pArmour, enemy, eWeapon, eArmour);
-          gameOver = !gameOver;
-          break;
-        }
-        if (attackType == 5){
-             // Healing potion
-          
-        }
+
+// Main Game Loop
+while (!gameOver) {
+if (playerTurn) {
+    // player code
+    ink.printTurnMenu();
+    attackType = input.nextInt();
+    if (attackType == 3) {
+      // Healing option
+      healthPotion.use(player);
+      System.out.println("You used a healing potion and restored " + healthPotion.getHealingAmount() + " health!");
+      
+      System.out.println("Player Health = " + player.getHealth());
+        
+
+    } else if (attackType == 4) {
+        // save game
+        io.saveGame(player, pWeapon, pArmour, enemy, eWeapon, eArmour);
+        gameOver = !gameOver;
+        break;
+    } else if (attackType == 5) {
+        gameOver = !gameOver;
+        break; // breaks out of the while loop
+    } else {
         eDamage = pWeapon.strike(attackType, player.getDexterity(), player.getStrength(), weather.getSeverity());
         if (eDamage > 0) {
-          eDamage = eArmour.getFinalDamage(eDamage);
-          enemy.takeDamage(eDamage);
-          System.out.println("Player dealt: " + eDamage + " damage to the enemy!");
-          System.out.println("Enemy Health = " + enemy.getHealth());
-          if (enemy.getHealth() <= 0) {
-            winner = "Player";
-            gameOver = true;
-          }
+            eDamage = eArmour.getFinalDamage(eDamage);
+            enemy.takeDamage(eDamage);
+            System.out.println("Player dealt: " + eDamage + " damage to the enemy!");
+            System.out.println("Enemy Health = " + enemy.getHealth());
+            if (enemy.getHealth() <= 0) {
+                winner = "Player";
+                gameOver = true;
+            }
         } else {
-          System.out.println("Missed! No damage dealt.");
+            System.out.println("Missed! No damage dealt.");
         }
-      } else {
-        // enemy code
-        System.out.println(); // blank line
-        System.out.println("Enemy Turn!");
-        attackType = randNum.nextInt(2) + 1;
-        pDamage = eWeapon.strike(attackType, enemy.getDexterity(), enemy.getStrength(), weather.getSeverity());
-        if (pDamage > 0) {
-          pDamage = pArmour.getFinalDamage(pDamage);
-          player.takeDamage(pDamage);  // as1sign the damage amount to the player
-          System.out.println("Enemy dealt: " + pDamage + " damage to you!");
-          System.out.println("Player Health = " + player.getHealth());
-          if (player.getHealth() <= 0) {
+    }
+} else {
+    // enemy code
+    System.out.println(); // blank line
+    System.out.println("Enemy Turn!");
+    attackType = randNum.nextInt(2) + 1;
+    pDamage = eWeapon.strike(attackType, enemy.getDexterity(), enemy.getStrength(), weather.getSeverity());
+    if (pDamage > 0) {
+        pDamage = pArmour.getFinalDamage(pDamage);
+        player.takeDamage(pDamage);  // assign the damage amount to the player
+        System.out.println("Enemy dealt: " + pDamage + " damage to you!");
+        System.out.println("Player Health = " + player.getHealth());
+        if (player.getHealth() <= 0) {
             winner = "Enemy";
             gameOver = true;
-          }
-        } else {
-          System.out.println("Enemy missed! No damage dealt.");
         }
-      }
-      playerTurn = !playerTurn; // toggles turn each iteration
-    } // while
-    if(attackType != 4)
-      ink.printGameOver(winner);
-    else 
-      ink.printSaveConfirmation();
-  } // main()
+    } else {
+        System.out.println("Enemy missed! No damage dealt.");
+                }
+            }
+            playerTurn = !playerTurn; // toggles turn each iteration
+        } // while
+        if (attackType != 4)
+            ink.printGameOver(winner);
+        else
+            ink.printSaveConfirmation();
+    } // main()
 
   //========================>>
-  // Helper Methods
-  public static void createWarrior(String who, int choice) {
-    if(who.equals("Player")) { // player warrior creation
-      switch (choice) {
-        case 1: // Human
-          player = new Human();
-          player.setWarriorType("Human");
-          break;
-        case 2: // Elf
-          player = new Elf();
-          player.setWarriorType("Elf");
-          break;
-        case 3: // Orc
-          player = new Orc();
-          player.setWarriorType("Orc");
-          break;
-        default:
-          System.out.println("Oops!");
-          break;
-      } // switch
-    } else { // enemy warrior creation
-      switch (choice) {
-        case 1: // Human
-          enemy = new Human();
-          enemy.setWarriorType("Human");
-          break;
-        case 2: // Elf
-          enemy = new Elf();
-          enemy.setWarriorType("Elf");
-          break;
-        case 3: // Orc
-          enemy = new Orc();
-          enemy.setWarriorType("Orc");
-          break;
-        default:
-          System.out.println("Oops!");
-          break;
-      } // switch
+// Helper Methods
+public static void createWarrior(String who, int choice) {
+if(who.equals("Player")) { // player warrior creation
+  switch (choice) {
+    case 1: // Human
+      player = new Human();
+      player.setWarriorType("Human");
+      break;
+    case 2: // Elf
+      player = new Elf();
+      player.setWarriorType("Elf");
+      break;
+    case 3: // Orc
+      player = new Orc();
+      player.setWarriorType("Orc");
+      break;
+    default:
+      System.out.println("Oops!");
+      break;
+  } // switch
+} else { // enemy warrior creation
+  switch (choice) {
+    case 1: // Human
+      enemy = new Human();
+      enemy.setWarriorType("Human");
+      break;
+    case 2: // Elf
+      enemy = new Elf();
+      enemy.setWarriorType("Elf");
+      break;
+    case 3: // Orc
+      enemy = new Orc();
+      enemy.setWarriorType("Orc");
+      break;
+    default:
+      System.out.println("Oops!");
+      break;
+  } // switch
     }
   } // createWarrior()
 
   public static void createWeapon(String who, int choice) {
-    switch (choice) {
+      switch (choice) {
       case 1: // Dagger
         if(who.equals("Player")) {
           pWeapon = new Dagger("Dagger");
@@ -287,9 +294,11 @@ public class Warsim {
     choice = input.nextInt();
     createArmour(who, choice);
 
+    potion = new SmallHealthPotion(150);
     // player is all setup
     // switch 'who' to Enemy
     who = "Enemy";
+    //healthPotion = new SmallHealthPotion(150);
 
     //=====================>>
     // Enemy Creation
@@ -304,6 +313,9 @@ public class Warsim {
     // Armour
     choice = randNum.nextInt(3) + 1; 
     createArmour(who, choice);
+
+    //Weather
+    choice = randNum.nextInt(4) + 1;
 
     ink.printWarriorStats(player, enemy);
     ink.printWeaponType(pWeapon, eWeapon);
