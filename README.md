@@ -15,3 +15,5 @@ Warsim 2024 - Java-Assignment #4
    - When the game is continued, there is a print statement listing the player/enemy stats.
 
 3. **Added colour to the print screen.**
+
+4. **Added a HEAL option***
