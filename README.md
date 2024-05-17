@@ -16,4 +16,4 @@ Warsim 2024 - Java-Assignment #4
 
 3. **Added colour to the print screen.**
 
-4. **Added a HEAL option***
+4. **Added a HEAL option**
